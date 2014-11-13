@@ -15,7 +15,9 @@ It also bring block to standard UIAlertView ;)
       println("Action \(index)")
   })
   alert.tintColor = Colors.boddyBlue()
-  alert.show(onViewController: self)
+  alert.show(onViewController: self, completion: { () -> Void in 
+      println("Alert shown")
+  })
 ```
 
 *Objective-C*
@@ -25,5 +27,7 @@ It also bring block to standard UIAlertView ;)
   [alert addActionWithTitle:@"Action" style:UIAlertActionStyleDestructive handler:^(NSInteger index) {
       NSLog(@"action %d",index);
   }];
-  [alert showOnViewController:self];
+  [alert showOnViewController:self completion:^() {
+      NSLog(@"Alert shown");
+  }];
 ```
