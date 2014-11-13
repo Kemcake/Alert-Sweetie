@@ -90,6 +90,14 @@ class Alert: NSObject, UIAlertViewDelegate {
         }
     }
     
+    func show() {
+        var rootController = (UIApplication.sharedApplication().keyWindow?.rootViewController)
+        if((rootController?.presentedViewController) != nil) {
+            rootController = rootController?.presentedViewController as UIViewController!
+        }
+        self.show(onViewController: rootController!, completion: nil)
+    }
+    
     //MARK: AlertView delegate
     func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
         if (useAlertController) {
@@ -99,5 +107,55 @@ class Alert: NSObject, UIAlertViewDelegate {
                 handlers[buttonIndex]!(buttonIndex)
             }
         }
+    }
+    
+    //MARK: Errors
+    class func showWithError(error:NSError?) {
+        var title:String?
+        if(error != nil){
+            let errorString = (error?.userInfo as [String:String])["error"]
+            let errorCode = Alert.errorCode(string: errorString)
+            if (errorCode != NSNotFound) {
+                let pttrn = "Error\(errorCode)"
+                let string = NSLocalizedString(pttrn, comment:"")
+                if (string != pttrn) {
+                    title = string
+                }
+            }
+        }
+        
+        if (title == nil) {
+            title = NSLocalizedString("GenericErrorMessage", comment:"")
+        }
+        
+        let alert = Alert(title: "Error", message: title)
+        alert.addAction(title: "OK", style: .Cancel, handler: nil)
+        alert.show()
+        
+    }
+    
+    class func errorCode(#string:String?) -> Int {
+        if string == nil { return NSNotFound }
+        
+        //convert into JSON
+        var jsonError:NSError?
+        let stringData = (string as NSString!).dataUsingEncoding(NSUTF8StringEncoding) as NSData!
+        let infos = NSJSONSerialization.JSONObjectWithData(stringData, options: NSJSONReadingOptions.MutableContainers, error: &jsonError) as NSDictionary
+        
+        if (jsonError != nil && infos["text"] != nil) {
+            let infosData = (infos["text"] as NSString).dataUsingEncoding(NSUTF8StringEncoding) as NSData!
+            var errorInfo = NSJSONSerialization.JSONObjectWithData(infosData, options: NSJSONReadingOptions.MutableContainers, error: &jsonError) as NSDictionary
+            
+            if (jsonError != nil) {
+                var errorCode:Int = 0
+                if (errorInfo["code"] != nil) {
+                    errorCode = errorInfo["code"] as Int
+                } else if (errorInfo["error"] != nil) {
+                    errorCode = (errorInfo["error"] as NSDictionary)["code"] as Int
+                }
+                return errorCode
+            }
+        }
+        return NSNotFound
     }
 }
