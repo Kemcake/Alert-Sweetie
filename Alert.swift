@@ -54,6 +54,13 @@ class Alert: NSObject, UIAlertViewDelegate {
         
     }
     
+    class func show(#title:String?, message:String?, button:String, handler:((Int)->Void)?) {
+        let alert = Alert(title: title, message: message)
+        alert.tintColor = UIColor.blueColor()
+        alert.addAction(title: button, style: .Cancel, handler: handler)
+        alert.show()
+    }
+    
     func addAction(#title:String, style:UIAlertActionStyle, handler:(Int->Void)?) {
         if (useAlertController) {
             let currentIndex:Int! = index
@@ -110,7 +117,7 @@ class Alert: NSObject, UIAlertViewDelegate {
     }
     
     //MARK: Errors
-    class func showWithError(error:NSError?) {
+    class func show(#error:NSError?) {
         var title:String?
         if(error != nil){
             let errorString = (error?.userInfo as [String:String])["error"]
@@ -128,10 +135,7 @@ class Alert: NSObject, UIAlertViewDelegate {
             title = NSLocalizedString("GenericErrorMessage", comment:"")
         }
         
-        let alert = Alert(title: "Error", message: title)
-        alert.addAction(title: "OK", style: .Cancel, handler: nil)
-        alert.show()
-        
+        Alert.show(title:"Error", message:title, button:"OK", handler:nil)
     }
     
     class func errorCode(#string:String?) -> Int {
