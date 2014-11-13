@@ -9,7 +9,7 @@
 import UIKit
 
 class Alert: NSObject, UIAlertViewDelegate {
- 
+    
     var alertController : UIAlertController?
     var alertView : UIAlertView?
     var delegate:UIAlertViewDelegate! {
@@ -29,7 +29,7 @@ class Alert: NSObject, UIAlertViewDelegate {
     
     private var index:Int = 0
     private var handlers:[(Int->Void)?] = []
-   
+    
     var tintColor:UIColor = UIColor.blueColor() {
         didSet {
             if (useAlertController) {
@@ -46,10 +46,10 @@ class Alert: NSObject, UIAlertViewDelegate {
         } else {
             delegate = self
             alertView = UIAlertView(
-            title: title,
-            message: message,
-            delegate: delegate,
-            cancelButtonTitle: nil)
+                title: title,
+                message: message,
+                delegate: delegate,
+                cancelButtonTitle: nil)
         }
         
     }
@@ -75,11 +75,18 @@ class Alert: NSObject, UIAlertViewDelegate {
         index++
     }
     
-    func show(onViewController controller:UIViewController) {
+    func show(onViewController controller:UIViewController, completion:(() -> Void)?) {
         if (useAlertController) {
-            controller.presentViewController(alertController!, animated: true, completion: nil)
+            controller.presentViewController(alertController!, animated: true, completion: {()->Void in
+                if completion != nil {
+                    completion!()
+                }
+            })
         } else {
             alertView?.show()
+            if completion != nil {
+                completion!()
+            }
         }
     }
     
@@ -89,7 +96,7 @@ class Alert: NSObject, UIAlertViewDelegate {
             //never
         } else {
             if ( handlers[buttonIndex] != nil) {
-                 handlers[buttonIndex]!(buttonIndex)
+                handlers[buttonIndex]!(buttonIndex)
             }
         }
     }
