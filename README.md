@@ -21,7 +21,7 @@ It also bring block to standard UIAlertView ;)
 ```
 
 *Objective-C*
-``` Objective-C
+``` ObjC
   Alert *alert = [[Alert alloc] initWithTitle:@"A great title" message:@"And of course a nice message"];
   alert.tintColor = [Colors boddyBlue];
   [alert addActionWithTitle:@"Action" style:UIAlertActionStyleDestructive handler:^(NSInteger index) {
@@ -31,3 +31,15 @@ It also bring block to standard UIAlertView ;)
       NSLog(@"Alert shown");
   }];
 ```
+
+**You can also use the `show()`method that choose the rootViewController as presenter**
+
+### One more thing
+
+We sometimes need to handle errors, here's a good way. You just have to add strings like this :`Error<#code>` in localized strings to support error translation
+
+```Swift
+  let error:NSError?
+  Alert.showWithError(error)
+```
+
