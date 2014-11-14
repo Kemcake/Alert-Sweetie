@@ -120,13 +120,16 @@ class Alert: NSObject, UIAlertViewDelegate {
     class func show(#error:NSError?) {
         var title:String?
         if(error != nil){
-            let errorString = (error?.userInfo as [String:String])["error"]
-            let errorCode = Alert.errorCode(string: errorString)
-            if (errorCode != NSNotFound) {
-                let pttrn = "Error\(errorCode)"
-                let string = NSLocalizedString(pttrn, comment:"")
-                if (string != pttrn) {
-                    title = string
+            let userInfo = error?.userInfo as [String:AnyObject]
+            if (!userInfo.isEmpty) {
+                let errorString = userInfo["error"] as String
+                let errorCode = Alert.errorCode(string: errorString)
+                if (errorCode != NSNotFound) {
+                    let pttrn = "Error\(errorCode)"
+                    let string = NSLocalizedString(pttrn, comment:"")
+                    if (string != pttrn) {
+                        title = string
+                    }
                 }
             }
         }
