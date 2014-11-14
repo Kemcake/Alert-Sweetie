@@ -144,10 +144,10 @@ class Alert: NSObject, UIAlertViewDelegate {
         //convert into JSON
         var jsonError:NSError?
         let stringData = (string as NSString!).dataUsingEncoding(NSUTF8StringEncoding) as NSData!
-        let infos = NSJSONSerialization.JSONObjectWithData(stringData, options: NSJSONReadingOptions.MutableContainers, error: &jsonError) as NSDictionary
+        let infos = NSJSONSerialization.JSONObjectWithData(stringData, options: NSJSONReadingOptions.MutableContainers, error: &jsonError) as NSDictionary?
         
-        if (jsonError != nil && infos["text"] != nil) {
-            let infosData = (infos["text"] as NSString).dataUsingEncoding(NSUTF8StringEncoding) as NSData!
+        if (jsonError != nil && infos?["text"] != nil) {
+            let infosData = (infos?["text"] as NSString).dataUsingEncoding(NSUTF8StringEncoding) as NSData!
             var errorInfo = NSJSONSerialization.JSONObjectWithData(infosData, options: NSJSONReadingOptions.MutableContainers, error: &jsonError) as NSDictionary
             
             if (jsonError != nil) {
