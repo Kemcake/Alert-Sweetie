@@ -121,7 +121,7 @@ class Alert: NSObject, UIAlertViewDelegate {
         var title:String?
         if(error != nil){
             let userInfo = error?.userInfo as [String:AnyObject]
-            if (!userInfo.isEmpty) {
+            if (userInfo["error"] != nil) {
                 let errorString = userInfo["error"] as String
                 let errorCode = Alert.errorCode(string: errorString)
                 if (errorCode != NSNotFound) {
